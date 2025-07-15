@@ -1,9 +1,11 @@
 const express = require('express');
 const axios = require('axios');
+const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Endpoint: GET /generate?prompt=your+prompt+here
+app.use(cors()); // <- CORS fix
+
 app.get('/generate', async (req, res) => {
   const prompt = req.query.prompt;
 
@@ -15,9 +17,7 @@ app.get('/generate', async (req, res) => {
     const encodedPrompt = encodeURIComponent(prompt);
     const pollinationsURL = `https://text.pollinations.ai/${encodedPrompt}`;
 
-    // Forward the request to Pollinations
     const response = await axios.get(pollinationsURL);
-
     res.status(200).send(response.data);
   } catch (error) {
     console.error('Error fetching from Pollinations:', error.message);
